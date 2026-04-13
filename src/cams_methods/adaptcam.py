@@ -6,8 +6,8 @@ from .gradcam import GradCAM
 from .scorecam import ScoreCAM
 
 
-class FusionCAM(BaseCAM):
-    """Fusion-CAM: Advanced fusion of Denoised Grad-CAM and Score-CAM"""
+class AdaptCAM(BaseCAM):
+    """Adapt-CAM: Advanced Adapt of Denoised Grad-CAM and Score-CAM"""
     
     def __init__(self, model, device=None):
         super().__init__(model, device)
@@ -36,7 +36,7 @@ class FusionCAM(BaseCAM):
         return a / total, b / total
 
     def generate_cam(self, input_tensor, target_layer=None, target_class=None, theta=10, **kwargs):
-        """Generate Fusion-CAM heatmap"""
+        """Generate Adapt-CAM heatmap"""
         # Generate component CAMs
         L_denoising, _ = self._generate_gradcam_denoised(input_tensor, target_layer, target_class, theta)
         L_region, _ = self.scorecam.generate_cam(input_tensor, target_layer, target_class)
@@ -79,17 +79,17 @@ class FusionCAM(BaseCAM):
             f_de_region = torch.softmax(self.model(masked_de_region), dim=1)
         β_de_region = (f_de_region[0, pred_class] - β_black).item()
 
-        # --- Normalize fusion weights ---
+        # --- Normalize Adapt weights ---
         β_de_region, β_region = self._normalize_weights(β_de_region, β_region)
 
-        # --- Soft fusion ---
+        # --- Soft Adapt ---
         L1 = L_de_region * β_de_region
         L2 = L_region * β_region
 
         diff = np.abs(L1 - L2)
         sim = np.clip(1 - diff, 0, 1)
 
-        fusion_cam = sim * np.maximum(L1, L2) + (1 - sim) * 0.5 * (L1 + L2)
-        fusion_cam = self.normalize_heatmap(fusion_cam)
+        Adapt_cam = sim * np.maximum(L1, L2) + (1 - sim) * 0.5 * (L1 + L2)
+        Adapt_cam = self.normalize_heatmap(Adapt_cam)
 
-        return fusion_cam, pred_class
+        return Adapt_cam, pred_class
