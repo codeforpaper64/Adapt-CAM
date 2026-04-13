@@ -7,7 +7,7 @@ from typing import Optional, List, Dict, Any
 from tqdm import tqdm
 
 # Change these imports:
-from src.cam_methods import GradCAM, GradCAMPP, XGradCAM, ScoreCAM, GroupCAM, UnionCAM, FusionCAM
+from src.cam_methods import GradCAM, GradCAMPP, XGradCAM, ScoreCAM, GroupCAM, UnionCAM, AdaptCAM
 from src.utils.image_utils import preprocess_image, get_image_files
 from src.models.model_loader import ModelLoader
 
@@ -41,7 +41,7 @@ class XAIVisualizer:
             'scorecam': ScoreCAM(self.model, self.device),
             'groupcam': GroupCAM(self.model, self.device),
             'unioncam': UnionCAM(self.model, self.device),
-            'fusioncam': FusionCAM(self.model, self.device),
+            'adaptcam': AdaptCAM(self.model, self.device),
         }
         
         print(f" XAIVisualizer initialized with {architecture}")
@@ -217,7 +217,7 @@ class XAIVisualizer:
         - Row 2: Original + Overlays of selected techniques
         """
         if methods is None:
-            methods = ['gradcam', 'scorecam', 'unioncam', 'fusioncam']
+            methods = ['gradcam', 'scorecam', 'unioncam', 'adaptcam']
         
         # Preprocess image once
         input_tensor, display_img = preprocess_image(image_path, device=self.device)
