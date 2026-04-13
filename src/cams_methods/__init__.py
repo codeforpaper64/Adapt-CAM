@@ -5,7 +5,7 @@ from .xgradcam import XGradCAM
 from .scorecam import ScoreCAM
 from .groupcam import GroupCAM
 from .unioncam import UnionCAM
-from .fusioncam import FusionCAM
+from .adaptcam import AdaptCAM
 
 __all__ = [
     "BaseCAM",
@@ -15,5 +15,5 @@ __all__ = [
     "ScoreCAM",
     "GroupCAM",
     "UnionCAM",
-    "FusionCAM",
+    "AdaptCAM",
 ]
