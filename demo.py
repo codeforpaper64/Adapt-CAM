@@ -38,7 +38,7 @@ def main():
         "scorecam",
         "groupcam",
         "unioncam",
-        "fusioncam",
+        "adaptcam",
     ]
 
     print(f"Processing image: {image_path}")
